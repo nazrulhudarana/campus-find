@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusFind — Verify 6-Digit OTP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/modals.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #07193d 0%, #0f357a 55%, #1d4ed8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .otp-card {
+      width: 100%;
+      max-width: 460px;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: 0 28px 70px rgba(7, 25, 61, 0.45);
+      text-align: center;
+    }
+
+    .otp-logo {
+      height: 68px;
+      width: auto;
+      max-width: 240px;
+      object-fit: contain;
+      margin: 0 auto 12px;
+      display: block;
+    }
+
+    .otp-card h2 {
+      font-size: 22px;
+      font-weight: 900;
+      color: #0b2559;
+      margin-bottom: 6px;
+    }
+
+    .otp-sub {
+      font-size: 13.5px;
+      color: #475569;
+      margin-bottom: 14px;
+    }
+
+    .otp-timer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #c2410c;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .otp-code-input {
+      width: 100%;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 10px;
+      padding: 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      outline: none;
+    }
+
+    .otp-code-input:focus {
+      border-color: #1d4ed8;
+    }
+
+    .otp-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      font-size: 13px;
+    }
+
+    .otp-link-btn {
+      background: none;
+      border: none;
+      color: #1d4ed8;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .otp-link-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .dev-otp-banner {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="otp-card">
+    <img
+      src="/uploads/logo.png"
+      alt="CampusFind"
+      class="otp-logo"
+      onerror="this.style.display='none';"
+    />
+    <h2>Verify Your @seu.edu.bd OTP</h2>
+    <p class="otp-sub" id="otpTargetEmail">Checking OTP session...</p>
+
+    <div class="otp-timer-pill">
+      <i class="fa-regular fa-clock"></i>
+      <span>Expires in: <strong id="otpCountdown">05:00</strong></span>
+    </div>
+
+    <div class="dev-otp-banner" id="devOtpBanner"></div>
+
+    <form id="verifyOtpForm">
+      <input
+        type="text"
+        id="otpCodeInput"
+        class="otp-code-input"
+        maxlength="6"
+        inputmode="numeric"
+        pattern="[0-9]{6}"
+        required
+        placeholder="••••••"
+      />
+      <button type="submit" class="cf-btn-primary cf-btn-orange" id="verifyOtpBtn">
+        Verify &amp; Continue &rarr;
+      </button>
+    </form>
+
+    <div class="otp-actions-row">
+      <button type="button" class="otp-link-btn" id="resendOtpBtn">Resend OTP</button>
+      <a href="/auth.html" style="color:#475569;font-weight:700;text-decoration:none;">&larr; Change Email</a>
+    </div>
+  </div>
+
+  <script src="/js/toast.js"></script>
+  <script>
+    const TOKEN_KEY = 'campusfind_token';
+    const USER_KEY = 'campusfind_user';
+    const SESSION_KEY = 'cf_pending_otp';
+
+    const params = new URLSearchParams(window.location.search);
+    let sessionData = null;
+    try {
+      sessionData = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
+    } catch (_) {}
+
+    const email = (sessionData && sessionData.email) || params.get('email') || '';
+    const purpose = (sessionData && sessionData.purpose) || params.get('purpose') || 'signup';
+    let expiresAtMs = sessionData && sessionData.expiresAt ? new Date(sessionData.expiresAt).getTime() : Date.now() + 5 * 60 * 1000;
+
+    if (!email) {
+      window.location.href = '/auth.html';
+    }
+
+    document.getElementById('otpTargetEmail').innerHTML =
+      `Enter the 6-digit code sent to <strong>${email}</strong>`;
+
+    const showDevOtp = (code) => {
+      const box = document.getElementById('devOtpBanner');
+      if (code) {
+        box.style.display = 'block';
+        box.textContent = `SMTP not configured — Dev OTP: ${code}`;
+      }
+    };
+    if (sessionData && sessionData.devOtp) showDevOtp(sessionData.devOtp);
+
+    const timerEl = document.getElementById('otpCountdown');
+    const verifyBtn = document.getElementById('verifyOtpBtn');
+
+    const tickTimer = () => {
+      const diff = Math.max(0, Math.floor((expiresAtMs - Date.now()) / 1000));
+      const mins = String(Math.floor(diff / 60)).padStart(2, '0');
+      const secs = String(diff % 60).padStart(2, '0');
+      timerEl.textContent = `${mins}:${secs}`;
+
+      if (diff <= 0) {
+        timerEl.textContent = '00:00 (Expired)';
+        verifyBtn.disabled = true;
+      } else {
+        verifyBtn.disabled = false;
+      }
+    };
+    tickTimer();
+    setInterval(tickTimer, 1000);
+
+    document.getElementById('verifyOtpForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const otp = document.getElementById('otpCodeInput').value.trim();
+      const endpoint = purpose === 'login' ? '/api/auth/verify-login-otp' : '/api/auth/verify-signup-otp';
+
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Verifying...';
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, otp })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          window.CfToast.show(data.message || 'OTP verification failed', 'error');
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = 'Verify & Continue →';
+          return;
+        }
+
+        sessionStorage.removeItem(SESSION_KEY);
+        localStorage.setItem(TOKEN_KEY, data.token);
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        window.CfToast.show('OTP verified! Redirecting to dashboard...', 'success');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 450);
+      } catch (_) {
+        window.CfToast.show('Network error verifying OTP', 'error');
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'Verify & Continue →';
+      }
+    });
+
+    document.getElementById('resendOtpBtn').addEventListener('click', async () => {
+      const resendBtn = document.getElementById('resendOtpBtn');
+      resendBtn.disabled = true;
+      try {
+        const res = await fetch('/api/auth/resend-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, purpose })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          window.CfToast.show(data.message || 'Could not resend OTP', 'error');
+          resendBtn.disabled = false;
+          return;
+        }
+        expiresAtMs = new Date(data.expiresAt).getTime();
+        showDevOtp(data.devOtp);
+        window.CfToast.show(data.message || 'New OTP sent!', 'success');
+        setTimeout(() => {
+          resendBtn.disabled = false;
+        }, 15000);
+      } catch (_) {
+        window.CfToast.show('Failed to resend OTP', 'error');
+        resendBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

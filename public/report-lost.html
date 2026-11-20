@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Lost Item — CampusFind (SEU)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/modals.css" />
+  <link rel="stylesheet" href="/css/shell.css" />
+  <style>
+    .rep-container {
+      max-width: 1120px;
+      margin: 20px auto 32px;
+      padding: 0 16px;
+    }
+
+    .rep-banner {
+      background: linear-gradient(135deg, #082B59 0%, #1261D6 100%);
+      color: #FFFFFF;
+      border-radius: 20px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 12px 28px rgba(8, 43, 89, 0.14);
+    }
+
+    .rep-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.16);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .rep-banner h1 {
+      font-size: clamp(21px, 2.8vw, 28px);
+      font-weight: 900;
+      margin: 0 0 6px;
+    }
+
+    .rep-banner p {
+      font-size: 13.5px;
+      color: rgba(255, 255, 255, 0.88);
+      max-width: 600px;
+    }
+
+    .rep-banner-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.16);
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      color: #93c5fd;
+      flex-shrink: 0;
+    }
+
+    .rep-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .rep-card {
+      background: #FFFFFF;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(8, 43, 89, 0.06);
+    }
+
+    .rep-card h2 {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: #082B59;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rep-map-box {
+      height: 265px;
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 12px;
+      z-index: 1;
+    }
+
+    .spot-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .spot-chip {
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+      color: #1261D6;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .spot-chip:hover {
+      background: #1261D6;
+      color: #FFFFFF;
+    }
+
+    .photo-preview-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .photo-preview-row img {
+      width: 76px;
+      height: 76px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid #cbd5e1;
+    }
+
+    .tip-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 12.5px;
+      color: #1e3a8a;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 840px) {
+      .rep-grid {
+        grid-template-columns: 1fr;
+      }
+      .rep-banner-icon {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="pageContent">
+    <div class="rep-container">
+      <div class="rep-banner">
+        <div>
+          <span class="rep-badge"><i class="fa-solid fa-circle-exclamation"></i> Lost Item Report</span>
+          <h1>Report a Lost Item on Campus</h1>
+          <p>
+            Share clear details and pin where you last saw your item at Southeast University.
+            CampusFind will auto-match it with newly reported found items.
+          </p>
+        </div>
+        <div class="rep-banner-icon">
+          <i class="fa-solid fa-magnifying-glass-location"></i>
+        </div>
+      </div>
+
+      <form id="reportLostForm" class="rep-grid">
+        <div class="rep-card">
+          <h2><i class="fa-solid fa-clipboard-list" style="color:#1261D6;"></i> Lost Item Details</h2>
+
+          <div class="cf-form-group">
+            <label>Item Title *</label>
+            <input class="cf-input" id="lostTitle" required placeholder="e.g. Black Dell Laptop Bag, SEU Student ID Card" />
+          </div>
+
+          <div class="cf-row-2">
+            <div class="cf-form-group">
+              <label>Category *</label>
+              <select class="cf-input" id="lostCategory" required>
+                <option value="Electronics">Electronics (Phone, Laptop, Earbuds)</option>
+                <option value="ID & Cards">SEU ID Card / Wallet / Bank Card</option>
+                <option value="Bags & Books">Backpack / Books / Notebook</option>
+                <option value="Accessories">Keys / Watch / Glasses / Bottle</option>
+                <option value="Documents">Certificates / Lab File / Documents</option>
+                <option value="General">Other Item</option>
+              </select>
+            </div>
+            <div class="cf-form-group">
+              <label>Date &amp; Time Last Seen *</label>
+              <input class="cf-input" type="datetime-local" id="lostDate" required />
+            </div>
+          </div>
+
+          <div class="cf-row-2">
+            <div class="cf-form-group">
+              <label>Building / Zone *</label>
+              <input class="cf-input" id="lostBuilding" required placeholder="e.g. SEU Academic Building" />
+            </div>
+            <div class="cf-form-group">
+              <label>Floor</label>
+              <input class="cf-input" id="lostFloor" placeholder="e.g. 9th Floor / Ground Floor" />
+            </div>
+          </div>
+
+          <div class="cf-row-2">
+            <div class="cf-form-group">
+              <label>Specific Room (If Known)</label>
+              <input class="cf-input" id="lostRoom" placeholder="e.g. Room 904 / Library" />
+            </div>
+            <div class="cf-form-group">
+              <label>Expected Room Range (If Unsure)</label>
+              <input class="cf-input" id="lostRoomRange" placeholder="e.g. Room 901 to 910" />
+            </div>
+          </div>
+
+          <div class="cf-form-group">
+            <label>Exact Lost Time (Optional)</label>
+            <input class="cf-input" type="time" id="lostExactTime" />
+          </div>
+
+          <div class="cf-form-group">
+            <label>Identifying Description &amp; Marks *</label>
+            <textarea
+              class="cf-input"
+              id="lostDesc"
+              rows="4"
+              required
+              placeholder="Describe color, brand, stickers, wallpaper, or unique marks that prove ownership..."
+            ></textarea>
+          </div>
+
+          <div class="cf-form-group">
+            <label>Reference Photos (Up to 3 images, Optional)</label>
+            <input class="cf-input" type="file" id="lostPhotos" accept="image/*" multiple />
+            <div class="photo-preview-row" id="lostPhotoPreview"></div>
+          </div>
+
+          <button type="submit" class="cf-btn-primary" id="submitLostBtn" style="background:#1261D6;">
+            <i class="fa-solid fa-paper-plane"></i> Submit Lost Report
+          </button>
+        </div>
+
+        <div class="rep-card">
+          <h2><i class="fa-solid fa-location-dot" style="color:#FF7900;"></i> Pin Last Seen Spot</h2>
+          <div class="spot-chips">
+            <button type="button" class="spot-chip" data-name="SEU Academic Building" data-lat="23.7689" data-lng="90.4067">Academic Building</button>
+            <button type="button" class="spot-chip" data-name="Central Library" data-lat="23.7692" data-lng="90.4071">Central Library</button>
+            <button type="button" class="spot-chip" data-name="Campus Cafeteria" data-lat="23.7686" data-lng="90.4063">Cafeteria</button>
+            <button type="button" class="spot-chip" data-name="Main Gate & Security Desk" data-lat="23.7684" data-lng="90.4069">Main Gate</button>
+          </div>
+
+          <div id="lostMapPicker" class="rep-map-box"></div>
+
+          <div class="cf-form-group">
+            <label>Pinned Location Label</label>
+            <input class="cf-input" id="lostLocationLabel" value="SEU Academic Building" required />
+          </div>
+
+          <input type="hidden" id="lostLat" value="23.7689" />
+          <input type="hidden" id="lostLng" value="90.4067" />
+
+          <div class="tip-box">
+            <strong><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Match Active:</strong>
+            Once submitted, CampusFind compares your report against all found items by category, building, and keywords.
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/shell.js"></script>
+  <script>
+    window.CampusFindShell?.mount('report-lost');
+
+    const TOKEN_KEY = 'campusfind_token';
+    const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      window.location.href = '/auth.html?mode=login';
+    }
+
+    const nowLocal = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+    document.getElementById('lostDate').value = nowLocal;
+
+    const map = L.map('lostMapPicker').setView([23.7689, 90.4067], 17);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const marker = L.marker([23.7689, 90.4067], { draggable: true }).addTo(map);
+
+    const setSpot = (lat, lng, label) => {
+      document.getElementById('lostLat').value = lat;
+      document.getElementById('lostLng').value = lng;
+      if (label) {
+        document.getElementById('lostLocationLabel').value = label;
+        if (!document.getElementById('lostBuilding').value) {
+          document.getElementById('lostBuilding').value = label;
+        }
+      }
+      marker.setLatLng([lat, lng]);
+      map.setView([lat, lng], 18);
+    };
+
+    map.on('click', (e) => {
+      setSpot(e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6));
+    });
+
+    marker.on('dragend', () => {
+      const pos = marker.getLatLng();
+      document.getElementById('lostLat').value = pos.lat.toFixed(6);
+      document.getElementById('lostLng').value = pos.lng.toFixed(6);
+    });
+
+    document.querySelectorAll('.spot-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        setSpot(Number(chip.dataset.lat), Number(chip.dataset.lng), chip.dataset.name);
+      });
+    });
+
+    document.getElementById('lostPhotos').addEventListener('change', (e) => {
+      const preview = document.getElementById('lostPhotoPreview');
+      preview.innerHTML = '';
+      Array.from(e.target.files || [])
+        .slice(0, 3)
+        .forEach((file) => {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          preview.appendChild(img);
+        });
+    });
+
+    document.getElementById('reportLostForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitLostBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+      try {
+        const fd = new FormData();
+        const buildingVal = document.getElementById('lostBuilding').value.trim();
+        const floorVal = document.getElementById('lostFloor').value.trim();
+        const roomVal = document.getElementById('lostRoom').value.trim();
+        const rangeVal = document.getElementById('lostRoomRange').value.trim();
+        const exactTimeVal = document.getElementById('lostExactTime').value.trim();
+        const labelVal =
+          document.getElementById('lostLocationLabel').value.trim() || buildingVal || 'SEU Campus';
+
+        const locParts = [
+          labelVal,
+          floorVal,
+          roomVal || (rangeVal ? `Expected: ${rangeVal}` : '')
+        ].filter(Boolean);
+        const fullLoc = locParts.join(' • ');
+
+        const baseDesc = document.getElementById('lostDesc').value.trim();
+        const extraDetails = [
+          rangeVal && !roomVal ? `Expected Room Range: ${rangeVal}` : '',
+          exactTimeVal ? `Lost Time: ${exactTimeVal}` : ''
+        ].filter(Boolean);
+        const fullDesc = extraDetails.length
+          ? `${baseDesc} (${extraDetails.join(' | ')})`
+          : baseDesc;
+
+        const latVal = document.getElementById('lostLat').value || '23.7689';
+        const lngVal = document.getElementById('lostLng').value || '90.4067';
+
+        fd.append('type', 'lost');
+        fd.append('title', document.getElementById('lostTitle').value.trim());
+        fd.append('category', document.getElementById('lostCategory').value);
+        fd.append('eventDate', document.getElementById('lostDate').value);
+        fd.append('locationName', fullLoc);
+        fd.append('coordinates.lat', latVal);
+        fd.append('coordinates.lng', lngVal);
+        fd.append('description', fullDesc);
+
+        Array.from(document.getElementById('lostPhotos').files || [])
+          .slice(0, 3)
+          .forEach((file) => fd.append('photos', file));
+
+        const res = await fetch('/api/items', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + token },
+          body: fd
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          window.CfToast.show(data.message || 'Could not submit lost report', 'error');
+          return;
+        }
+
+        const matchCount = Array.isArray(data.matches) ? data.matches.length : 0;
+        window.CfToast.show(
+          matchCount > 0
+            ? `Lost report posted! ${matchCount} potential match(es) found!`
+            : 'Lost report posted successfully!',
+          'success'
+        );
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 700);
+      } catch (_) {
+        window.CfToast.show('Network error submitting report', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Lost Report';
+      }
+    });
+  </script>
+</body>
+</html>

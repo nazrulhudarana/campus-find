@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusFind — Find • Claim • Reconnect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/mobile.css" />
+  <link rel="stylesheet" href="/css/desktop.css" />
+  <link rel="stylesheet" href="/css/modals.css" />
+  <link rel="stylesheet" href="/css/landing.css" />
+</head>
+<body>
+  <!-- First Screen: CampusFind Landing Page (PC + Mobile, Auth on /auth.html) -->
+  <section id="landingView" class="landing-view" style="display:none;">
+    <div class="lp-hero-band">
+      <div class="lp-hero-bg-layer" aria-hidden="true"></div>
+
+      <nav class="lp-nav">
+        <div class="lp-nav-left">
+          <a href="#lp-hero" style="display:inline-flex; align-items:center; text-decoration:none;">
+            <img
+              src="/uploads/logo.png"
+              alt="CampusFind Logo"
+              class="lp-logo-banner"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
+            />
+            <span style="display:none; color:#fff; font-weight:800; font-size:22px;">CampusFind</span>
+          </a>
+        </div>
+
+        <div class="lp-links" id="lpNavLinks">
+          <a href="#lp-hero">Home</a>
+          <a href="#lp-features">Features</a>
+          <a href="#lp-how">How It Works</a>
+          <a href="#lp-about">About</a>
+        </div>
+
+        <div class="lp-auth-btns">
+          <button class="lp-btn-outline" type="button" id="heroOpenLoginBtn">Login</button>
+          <button class="lp-btn-orange" type="button" id="heroOpenSignupBtn">Sign Up</button>
+        </div>
+      </nav>
+
+      <div class="lp-mobile-pills">
+        <a href="#lp-hero">Home</a>
+        <a href="#lp-features">Features</a>
+        <a href="#lp-how">How It Works</a>
+        <a href="#lp-about">About</a>
+      </div>
+
+      <div class="lp-hero-grid" id="lp-hero">
+        <div class="lp-hero-copy">
+          <h2>Lost Something on Campus?</h2>
+          <p>
+            Don't Worry! CampusFind is here to help you find lost items, report found items, and
+            reconnect with what matters at Southeast University.
+          </p>
+
+          <div class="lp-mini-badges">
+            <span><i class="fa-solid fa-bolt"></i> Smart Matching</span>
+            <span><i class="fa-solid fa-location-dot"></i> Campus Map</span>
+            <span><i class="fa-solid fa-shield-halved"></i> Secure Claims</span>
+            <span><i class="fa-solid fa-trophy"></i> Campus Hero Rewards</span>
+          </div>
+
+          <div class="lp-hero-cta">
+            <button class="lp-btn-orange" type="button" id="lpGetStartedBtn">
+              Get Started Free &rarr;
+            </button>
+            <a href="#lp-features" class="lp-btn-outline" style="text-decoration:none;">
+              &#9654; Learn More
+            </a>
+          </div>
+        </div>
+
+        <div class="lp-hero-right-spacer" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="lp-container">
+      <div class="lp-stats-strip">
+        <div class="lp-stat-box">
+          <i class="fa-solid fa-users"></i>
+          <strong>10K+</strong>
+          <span>Campus Community</span>
+        </div>
+        <div class="lp-stat-box">
+          <i class="fa-solid fa-box-open"></i>
+          <strong>5K+</strong>
+          <span>Items Reconnected</span>
+        </div>
+        <div class="lp-stat-box">
+          <i class="fa-solid fa-star" style="color:#f59e0b"></i>
+          <strong>4.9/5</strong>
+          <span>Student Trust</span>
+        </div>
+        <div class="lp-stat-box">
+          <i class="fa-solid fa-building-columns"></i>
+          <strong>SEU</strong>
+          <span>Southeast University</span>
+        </div>
+      </div>
+
+      <div class="lp-section-head" id="lp-features">
+        <h3>Powerful <span>Features</span></h3>
+        <p>Everything you need for a smarter and safer campus experience</p>
+      </div>
+
+      <div class="lp-features-grid">
+        <div class="lp-feat-card">
+          <i class="fa-solid fa-location-dot"></i>
+          <strong>Interactive Campus Map</strong>
+          <span>Pin lost &amp; found spots across campus with ease.</span>
+        </div>
+        <div class="lp-feat-card">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <strong>Smart Matching</strong>
+          <span>Get matched with similar lost &amp; found items.</span>
+        </div>
+        <div class="lp-feat-card">
+          <i class="fa-solid fa-shield-halved"></i>
+          <strong>Secure Claim</strong>
+          <span>Verify ownership &amp; use 4-digit Security Desk PIN.</span>
+        </div>
+        <div class="lp-feat-card">
+          <i class="fa-solid fa-trophy" style="color:#f59e0b"></i>
+          <strong>Campus Hero</strong>
+          <span>Earn points, unlock badges &amp; climb leaderboard.</span>
+        </div>
+        <div class="lp-feat-card">
+          <i class="fa-brands fa-telegram"></i>
+          <strong>Instant Notifications</strong>
+          <span>Get real-time Telegram alerts on matches.</span>
+        </div>
+      </div>
+
+      <div class="lp-section-head" id="lp-how">
+        <h3><span>How It Works?</span></h3>
+        <p>Just a few simple steps to get started</p>
+      </div>
+
+      <div class="lp-steps-box">
+        <div class="lp-step-item">
+          <div class="lp-step-num">1</div>
+          <strong>Find Your Location</strong>
+          <span>Pick building or campus spot</span>
+        </div>
+        <div class="lp-step-item">
+          <div class="lp-step-num">2</div>
+          <strong>Report Lost/Found</strong>
+          <span>Add details &amp; photos</span>
+        </div>
+        <div class="lp-step-item">
+          <div class="lp-step-num">3</div>
+          <strong>Get Matched</strong>
+          <span>Auto-match &amp; alerts</span>
+        </div>
+        <div class="lp-step-item">
+          <div class="lp-step-num">4</div>
+          <strong>Reconnect</strong>
+          <span>Claim &amp; get item back</span>
+        </div>
+      </div>
+
+      <div class="lp-bottom-cta" id="lp-about">
+        <div class="lp-bottom-left">
+          <i class="fa-solid fa-trophy"></i>
+          <div>
+            <strong>Join CampusFind Today!</strong>
+            <span>A smarter campus. A more connected community with @seu.edu.bd</span>
+          </div>
+        </div>
+        <div class="lp-bottom-btns">
+          <button class="lp-btn-orange" type="button" id="lpBottomSignupBtn">Sign Up Now &rarr;</button>
+          <button class="lp-btn-outline" type="button" id="lpBottomLoginBtn">&#9654; Login</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Landing Page Multi-Column Footer (PC & Mobile) -->
+    <footer class="lp-footer">
+      <div class="lp-footer-inner">
+        <div class="lp-footer-grid">
+          <div class="lp-footer-brand-col">
+            <img
+              src="/uploads/logo.png"
+              alt="CampusFind Logo"
+              class="lp-logo-banner"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
+            />
+            <span style="display:none; color:#fff; font-weight:800; font-size:20px;">CampusFind</span>
+            <p class="lp-footer-desc">
+              Smart campus lost-and-found portal for Southeast University with auto-matching, map pins,
+              QR tags, Telegram alerts, and 4-digit Security Desk PIN handover.
+            </p>
+            <div class="lp-footer-status">
+              <span class="status-dot"></span>
+              <span>All systems operational</span>
+            </div>
+          </div>
+
+          <div class="lp-footer-col">
+            <h4>PORTAL</h4>
+            <a href="#lp-hero">Home</a>
+            <a href="#lp-features">Features</a>
+            <a href="#lp-how">How It Works</a>
+            <a href="/auth.html?mode=login">Login</a>
+            <a href="/auth.html?mode=signup">Sign Up</a>
+          </div>
+
+          <div class="lp-footer-col">
+            <h4>FOLLOW US</h4>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+              <i class="fa-brands fa-facebook"></i> Facebook
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+              <i class="fa-brands fa-instagram"></i> Instagram
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+              <i class="fa-brands fa-linkedin"></i> LinkedIn
+            </a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <i class="fa-brands fa-github"></i> GitHub
+            </a>
+          </div>
+
+          <div class="lp-footer-col">
+            <h4>CAMPUS</h4>
+            <a href="#lp-about">Southeast University</a>
+            <a href="#lp-features">Security Desk PIN</a>
+            <a href="#lp-how">Telegram Alerts</a>
+          </div>
+        </div>
+
+        <div class="lp-footer-bottom">
+          <span>&copy; 2026 CampusFind. All rights reserved.</span>
+          <span>Terms &amp; Conditions &bull; Privacy Policy</span>
+        </div>
+      </div>
+    </footer>
+  </section>
+
+  <!-- Authenticated User Dashboard View (No Footer Here) -->
+  <div id="dashboardView" style="display:none;">
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+    <aside class="mobile-drawer" id="mobileDrawer">
+      <div class="drawer-header">
+        <a href="#home" class="drawer-brand-link">
+          <img
+            src="/uploads/logo.png"
+            alt="CampusFind"
+            class="drawer-logo-lg"
+            onerror="this.style.display='none';"
+          />
+        </a>
+        <button class="drawer-close" id="closeDrawerBtn" type="button" aria-label="Close menu">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <nav class="drawer-links">
+        <button class="drawer-link active" data-tab="home" type="button"><i class="fa-solid fa-house"></i> Dashboard</button>
+        <button class="drawer-link" data-tab="feed" type="button"><i class="fa-solid fa-newspaper"></i> Community Feed</button>
+        <button class="drawer-link" data-tab="search" type="button"><i class="fa-solid fa-magnifying-glass"></i> Search Items</button>
+        <button class="drawer-link" data-tab="report-lost" type="button"><i class="fa-solid fa-circle-exclamation"></i> Report Lost</button>
+        <button class="drawer-link" data-tab="report-found" type="button"><i class="fa-solid fa-circle-check"></i> Report Found</button>
+        <button class="drawer-link" data-tab="map" type="button"><i class="fa-solid fa-location-dot"></i> Campus Map</button>
+        <button class="drawer-link" data-tab="reports" type="button"><i class="fa-solid fa-file-lines"></i> My Reports</button>
+        <button class="drawer-link" data-tab="claims" type="button"><i class="fa-solid fa-hand-holding"></i> My Claims</button>
+        <button class="drawer-link" data-tab="notifications" type="button"><i class="fa-regular fa-bell"></i> Notifications</button>
+        <button class="drawer-link" data-tab="profile" type="button"><i class="fa-regular fa-user"></i> Profile</button>
+      </nav>
+
+      <button class="drawer-logout-btn" id="drawerLogoutBtn" type="button">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </aside>
+
+    <div class="app-shell">
+      <!-- Left Navy Sidebar (Logo Only Here on PC) -->
+      <aside class="pc-sidebar">
+        <div class="pc-sidebar-brand">
+          <a href="#home" class="pc-logo-link">
+            <img
+              src="/uploads/logo.png"
+              alt="CampusFind"
+              class="pc-sidebar-logo-lg"
+              onerror="this.style.display='none';"
+            />
+          </a>
+        </div>
+
+        <nav class="pc-nav-list">
+          <button class="pc-nav-btn active" data-tab="home" type="button"><i class="fa-solid fa-house"></i> Dashboard</button>
+          <button class="pc-nav-btn" data-tab="feed" type="button"><i class="fa-solid fa-newspaper"></i> Community Feed</button>
+          <button class="pc-nav-btn" data-tab="search" type="button"><i class="fa-solid fa-magnifying-glass"></i> Search Items</button>
+          <button class="pc-nav-btn" data-tab="report-lost" type="button"><i class="fa-solid fa-circle-exclamation"></i> Report Lost</button>
+          <button class="pc-nav-btn" data-tab="report-found" type="button"><i class="fa-solid fa-circle-check"></i> Report Found</button>
+          <button class="pc-nav-btn" data-tab="map" type="button"><i class="fa-solid fa-location-dot"></i> Campus Map</button>
+          <button class="pc-nav-btn" data-tab="reports" type="button"><i class="fa-solid fa-file-lines"></i> My Reports</button>
+          <button class="pc-nav-btn" data-tab="claims" type="button"><i class="fa-solid fa-hand-holding"></i> My Claims</button>
+          <button class="pc-nav-btn" data-tab="notifications" type="button">
+            <i class="fa-regular fa-bell"></i> Notifications
+            <span class="badge-count" id="sideNotifCount">3</span>
+          </button>
+          <button class="pc-nav-btn" data-tab="profile" type="button"><i class="fa-regular fa-user"></i> Profile</button>
+        </nav>
+
+        <div class="pc-points-box">
+          <i class="fa-solid fa-trophy"></i>
+          <strong>Campus Hero</strong>
+          <span>Earn points &amp; climb the leaderboard!</span>
+          <button class="pc-points-cta" type="button">View Leaderboard &rarr;</button>
+        </div>
+
+        <button class="pc-logout-btn" id="pcLogoutBtn" type="button">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </aside>
+
+      <div class="pc-workspace">
+        <!-- PC Topbar (No Logo Here) -->
+        <header class="pc-topbar">
+          <div class="pc-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="pcQuickSearch" placeholder="Search for items, locations..." />
+          </div>
+
+          <div class="pc-topbar-right">
+            <button class="pc-notif-btn" id="pcNotifBtn" type="button" aria-label="Notifications">
+              <i class="fa-regular fa-bell"></i>
+              <span class="badge-count" id="pcNotifCount">3</span>
+            </button>
+
+            <div class="user-menu-wrap">
+              <button class="pc-user-chip" id="pcUserMenuBtn" type="button" aria-expanded="false">
+                <img
+                  id="pcTopAvatar"
+                  src="https://ui-avatars.com/api/?name=Student&background=1261D6&color=ffffff&size=128"
+                  alt="User"
+                />
+                <div class="pc-user-meta">
+                  <strong id="pcTopUserName">Student</strong>
+                  <small id="pcTopUserSub">Student</small>
+                </div>
+                <i class="fa-solid fa-chevron-down user-caret"></i>
+              </button>
+
+              <div class="user-dropdown" id="pcUserDropdown">
+                <button type="button" class="user-dd-item" data-action="profile">
+                  <i class="fa-regular fa-user"></i> My Profile
+                </button>
+                <button type="button" class="user-dd-item danger" data-action="logout">
+                  <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Mobile Topbar Only (No Welcome Profile Card Here) -->
+        <header class="mobile-header">
+          <div class="mobile-top-row">
+            <button class="hamburger-btn" id="openDrawerBtn" type="button" aria-label="Open menu">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <a href="#home" class="mobile-center-logo-link">
+              <img
+                src="/uploads/logo.png"
+                alt="CampusFind"
+                class="mobile-top-logo-2x"
+                onerror="this.style.display='none';"
+              />
+            </a>
+
+            <div class="mobile-top-right">
+              <button class="notif-btn" id="mobNotifBtn" type="button" aria-label="Notifications">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-count" id="mobNotifCount">3</span>
+              </button>
+
+              <div class="user-menu-wrap">
+                <button class="mob-avatar-btn" id="mobUserMenuBtn" type="button" aria-label="User menu" aria-expanded="false">
+                  <img
+                    id="mobTopAvatar"
+                    src="https://ui-avatars.com/api/?name=Student&background=1261D6&color=ffffff&size=128"
+                    alt="Profile"
+                  />
+                </button>
+
+                <div class="user-dropdown mobile-dd" id="mobUserDropdown">
+                  <button type="button" class="user-dd-item" data-action="profile">
+                    <i class="fa-regular fa-user"></i> My Profile
+                  </button>
+                  <button type="button" class="user-dd-item danger" data-action="logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main class="main-content">
+          <!-- Dashboard-Only Mobile Welcome Card -->
+          <div class="profile-card" id="dashMobileProfileCard">
+            <div class="profile-left">
+              <div class="avatar-wrap">
+                <img
+                  id="dashProfileAvatar"
+                  src="https://ui-avatars.com/api/?name=Student&background=1261D6&color=ffffff&size=128"
+                  alt="Avatar"
+                />
+                <span class="online-dot"></span>
+              </div>
+              <div class="profile-meta">
+                <span>Welcome back,</span>
+                <div class="name-line">
+                  <strong id="dashUserName">Student!</strong>
+                  <i class="fa-solid fa-crown crown-gold"></i>
+                </div>
+                <span id="dashUserSub">@seu.edu.bd</span>
+              </div>
+            </div>
+            <button class="hero-points-pill" type="button">
+              <strong id="dashHeroPoints">&#9733; 0</strong>
+              <small>Hero Points &rsaquo;</small>
+            </button>
+          </div>
+
+          <!-- PC Hero Banner with /uploads/sideimage.webp Background -->
+          <section class="pc-hero-banner">
+            <div class="pc-hero-bg" aria-hidden="true"></div>
+            <div class="pc-hero-content">
+              <span class="pc-hero-kicker">Welcome to</span>
+              <h2>CampusFind</h2>
+              <p>Your Smart Lost &amp; Found Solution at Southeast University</p>
+              <button type="button" class="pc-hero-btn" id="pcExploreMapBtn">
+                Explore Campus Map &rarr;
+              </button>
+            </div>
+          </section>
+
+          <!-- 4 Metric Cards -->
+          <section class="stats-card">
+            <div class="stat-item">
+              <div class="stat-num" id="statTotal">0</div>
+              <div class="stat-label">Total Reports</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" id="statMatched">0</div>
+              <div class="stat-label">Matched Items</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" id="statPending">0</div>
+              <div class="stat-label">Pending Claims</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" id="statResolved">0</div>
+              <div class="stat-label">Resolved</div>
+            </div>
+          </section>
+
+          <!-- Mobile Action Grid (Report Lost + Report Found + Search Items) -->
+          <section class="action-grid">
+            <button class="action-btn btn-report-lost" id="mobReportLostBtn" type="button">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <strong>Report Lost</strong>
+              <small>Find your lost item</small>
+            </button>
+            <button class="action-btn btn-report-found" id="mobReportFoundBtn" type="button">
+              <i class="fa-solid fa-box-open"></i>
+              <strong>Report Found</strong>
+              <small>Help others</small>
+            </button>
+            <button class="action-btn btn-search action-btn-full" id="openSearchBtn" type="button">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <div><strong>Search Items</strong><small>Browse lost &amp; found reports</small></div>
+            </button>
+          </section>
+
+          <!-- PC 3-Column Row: Campus Map | Quick Actions | Notifications -->
+          <div class="pc-grid-3">
+            <section class="section-card">
+              <div class="section-head">
+                <h2><i class="fa-solid fa-location-dot" style="color:#FF7900"></i> Campus Map</h2>
+                <a href="#map" class="link-action" id="viewFullMapLink">View Full Map &rarr;</a>
+              </div>
+              <div id="campusMapPreview" class="map-canvas"></div>
+            </section>
+
+            <section class="section-card">
+              <div class="section-head">
+                <h2><i class="fa-solid fa-bolt" style="color:#FF7900"></i> Quick Actions</h2>
+              </div>
+              <div class="qa-main-grid">
+                <button type="button" class="qa-big-btn qa-blue" id="qaReportLostBtn">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <strong>Report Lost</strong>
+                  <span>Find your lost item</span>
+                </button>
+                <button type="button" class="qa-big-btn qa-orange" id="qaReportFoundBtn">
+                  <i class="fa-solid fa-box-open"></i>
+                  <strong>Report Found</strong>
+                  <span>Help others</span>
+                </button>
+              </div>
+              <div class="qa-mini-grid">
+                <button type="button" class="qa-mini-btn" id="qaSearchBtn">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <span>Search Items</span>
+                </button>
+                <button type="button" class="qa-mini-btn" id="qaMapBtn">
+                  <i class="fa-solid fa-map-location-dot"></i>
+                  <span>Campus Map</span>
+                </button>
+                <button type="button" class="qa-mini-btn" id="qaScanQrBtn">
+                  <i class="fa-solid fa-qrcode"></i>
+                  <span>Scan QR</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="section-card">
+              <div class="section-head">
+                <h2><i class="fa-solid fa-bell" style="color:#FF7900"></i> Notifications</h2>
+                <a href="#notifications" class="link-action" id="notifViewAllLink">View All &rarr;</a>
+              </div>
+              <div class="notif-feed-list" id="dashboardNotifList">
+                <div class="notif-feed-item">
+                  <span class="nf-icon nf-blue"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                  <div class="nf-body">
+                    <strong>Match Found</strong>
+                    <span>Potential match detected for your reported item.</span>
+                  </div>
+                  <span class="nf-time">Just now</span>
+                </div>
+                <div class="notif-feed-item">
+                  <span class="nf-icon nf-orange"><i class="fa-solid fa-hand-holding"></i></span>
+                  <div class="nf-body">
+                    <strong>Claim Request</strong>
+                    <span>Check pending claim verification status.</span>
+                  </div>
+                  <span class="nf-time">10m ago</span>
+                </div>
+                <div class="notif-feed-item">
+                  <span class="nf-icon nf-green"><i class="fa-solid fa-circle-check"></i></span>
+                  <div class="nf-body">
+                    <strong>Resolved</strong>
+                    <span>Security Desk PIN handover updates appear here.</span>
+                  </div>
+                  <span class="nf-time">1h ago</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- PC Bottom 3-Column Row: Recent Activity | Join Campus Hero | Campus Info -->
+          <div class="pc-grid-3-bottom">
+            <section class="section-card">
+              <div class="section-head">
+                <h2><i class="fa-solid fa-clock-rotate-left" style="color:#1261D6"></i> Recent Activity</h2>
+                <a href="#items" class="link-action" id="recentViewAllLink">View All &rarr;</a>
+              </div>
+              <div id="recentItemsList"></div>
+            </section>
+
+            <section class="hero-promo-card">
+              <div class="hero-promo-top">
+                <i class="fa-solid fa-trophy"></i>
+                <div>
+                  <strong>Join Campus Hero!</strong>
+                  <span>Earn points, unlock badges &amp; climb the leaderboard!</span>
+                </div>
+              </div>
+              <button type="button" class="hero-promo-btn" id="pcJoinHeroBtn">Learn More &rarr;</button>
+            </section>
+
+            <section class="section-card campus-info-card">
+              <div class="section-head">
+                <h2><i class="fa-solid fa-building-columns" style="color:#1261D6"></i> Campus Info</h2>
+              </div>
+              <div class="campus-info-body">
+                <strong>Southeast University</strong>
+                <span>Tejgaon Industrial Area, Dhaka-1208</span>
+                <div class="campus-meta-lines">
+                  <div><i class="fa-solid fa-phone"></i> +880 2 55034111</div>
+                  <div><i class="fa-regular fa-envelope"></i> info@seu.edu.bd</div>
+                  <div><i class="fa-solid fa-globe"></i> www.seu.edu.bd</div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section class="mobile-hero-banner">
+            <i class="fa-solid fa-trophy"></i>
+            <div>
+              <strong>Campus Hero</strong>
+              <small>Earn points, unlock badges &amp; climb the leaderboard!</small>
+            </div>
+            <button type="button">View Leaderboard &rarr;</button>
+          </section>
+        </main>
+      </div>
+
+      <nav class="bottom-nav">
+        <button class="nav-item active" data-tab="home" type="button"><i class="fa-solid fa-house"></i><span>Home</span></button>
+        <button class="nav-item" data-tab="feed" type="button"><i class="fa-solid fa-newspaper"></i><span>Feed</span></button>
+        <button class="qr-fab" id="qrCenterBtn" type="button" aria-label="QR Tags"><i class="fa-solid fa-qrcode"></i></button>
+        <button class="nav-item" data-tab="hero" type="button"><i class="fa-solid fa-trophy"></i><span>Hero</span></button>
+        <button class="nav-item" data-tab="profile" type="button"><i class="fa-solid fa-user"></i><span>Profile</span></button>
+      </nav>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/map.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/modals.js"></script>
+  <script src="/js/auth-ui.js"></script>
+  <script src="/js/claims.js"></script>
+</body>
+</html>

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusFind — Student Login & Sign Up (@seu.edu.bd)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/modals.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+      background: #061636;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .auth-bg-banner {
+      position: fixed;
+      inset: 0;
+      background-image: url('/uploads/hero-banner.webp');
+      background-size: cover;
+      background-position: center right;
+      background-repeat: no-repeat;
+      opacity: 0.34;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .auth-bg-overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(125deg, rgba(6, 22, 54, 0.92) 0%, rgba(11, 42, 102, 0.84) 55%, rgba(6, 22, 54, 0.92) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .auth-page-wrap {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 980px;
+      display: grid;
+      grid-template-columns: 0.92fr 1.15fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .auth-brand-side {
+      padding: 8px 4px;
+    }
+
+    .auth-logo-img {
+      height: 86px;
+      width: auto;
+      max-width: 280px;
+      object-fit: contain;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .auth-brand-side h1 {
+      font-size: clamp(28px, 3.8vw, 40px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin: 16px 0 10px;
+      color: #ffffff;
+    }
+
+    .auth-brand-side h1 span {
+      color: #fb923c;
+    }
+
+    .auth-brand-side p {
+      font-size: 14px;
+      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.86);
+      max-width: 420px;
+    }
+
+    .auth-perks {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .auth-perks div {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .auth-perks i {
+      color: #fb923c;
+    }
+
+    .back-home-link {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #fed7aa;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .auth-form-panel {
+      background: rgba(255, 255, 255, 0.97);
+      color: #0f172a;
+      border-radius: 22px;
+      padding: 26px 24px;
+      box-shadow: 0 24px 60px rgba(3, 12, 32, 0.45);
+    }
+
+    .auth-switch-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+    }
+
+    .auth-switch-btn {
+      border: none;
+      background: transparent;
+      padding: 10px;
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+    }
+
+    .auth-switch-btn.active {
+      background: #ffffff;
+      color: #1d4ed8;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    .pass-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .pass-wrap .cf-input {
+      padding-right: 42px;
+    }
+
+    .eye-toggle-btn {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 4px 6px;
+    }
+
+    .eye-toggle-btn:hover {
+      color: #0b2559;
+    }
+
+    .login-options-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: -2px 0 14px;
+    }
+
+    .remember-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #1d4ed8;
+      cursor: pointer;
+    }
+
+    .link-btn-inline {
+      background: none;
+      border: none;
+      color: #1d4ed8;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .link-btn-inline:hover {
+      text-decoration: underline;
+    }
+
+    .dev-otp-inline {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    @media (max-width: 820px) {
+      body {
+        align-items: flex-start;
+        padding: 18px 14px 32px;
+      }
+
+      .auth-bg-banner {
+        background-position: center;
+        opacity: 0.3;
+      }
+
+      .auth-page-wrap {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .auth-brand-side {
+        padding: 4px 2px;
+      }
+
+      .auth-logo-img {
+        height: 68px;
+      }
+
+      .auth-brand-side h1 {
+        font-size: 26px;
+        margin: 10px 0 6px;
+      }
+
+      .auth-perks {
+        display: none;
+      }
+
+      .back-home-link {
+        margin-top: 8px;
+      }
+
+      .auth-form-panel {
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 18px;
+        padding: 18px 16px;
+        box-shadow: 0 14px 32px rgba(3, 12, 32, 0.35);
+      }
+
+      .cf-row-2 {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-bg-banner" aria-hidden="true"></div>
+  <div class="auth-bg-overlay" aria-hidden="true"></div>
+
+  <div class="auth-page-wrap">
+    <div class="auth-brand-side">
+      <img
+        src="/uploads/logo.png"
+        alt="CampusFind Logo"
+        class="auth-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+      />
+      <span style="display:none;font-size:22px;font-weight:900;">CampusFind</span>
+
+      <h1>Southeast University <span>Lost &amp; Found</span></h1>
+      <p>
+        Sign up once with <strong>@seu.edu.bd</strong> OTP verification, then sign in anytime
+        instantly using your password.
+      </p>
+
+      <div class="auth-perks">
+        <div><i class="fa-solid fa-bolt"></i> Instant Password Login for Verified Students</div>
+        <div><i class="fa-solid fa-envelope-circle-check"></i> @seu.edu.bd OTP Registration &amp; Welcome Manual</div>
+        <div><i class="fa-solid fa-key"></i> 4-Digit Security Desk Proxy PIN</div>
+      </div>
+
+      <a href="/" class="back-home-link">&larr; Back to Landing Page</a>
+    </div>
+
+    <div class="auth-form-panel">
+      <div class="auth-switch-bar" id="authSwitchBar">
+        <button class="auth-switch-btn active" type="button" id="authTabLogin">Login</button>
+        <button class="auth-switch-btn" type="button" id="authTabSignup">Sign Up</button>
+      </div>
+
+      <!-- Direct Password Login Form (No OTP Required) -->
+      <form id="pageLoginForm">
+        <div class="cf-form-group">
+          <label>@seu.edu.bd Email or Student ID</label>
+          <input class="cf-input" id="loginEmailOrId" required placeholder="student@seu.edu.bd or Student ID" />
+        </div>
+        <div class="cf-form-group">
+          <label>Password</label>
+          <div class="pass-wrap">
+            <input class="cf-input" type="password" id="loginPass" required placeholder="Enter password" />
+            <button type="button" class="eye-toggle-btn" data-target="loginPass" aria-label="Toggle password">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-options-row">
+          <label class="remember-label">
+            <input type="checkbox" id="rememberMeCheck" checked />
+            <span>Remember me (30 days)</span>
+          </label>
+          <button type="button" class="link-btn-inline" id="openForgotBtn">Forgot Password?</button>
+        </div>
+
+        <button class="cf-btn-primary" type="submit" id="loginSubmitBtn">Login &rarr;</button>
+      </form>
+
+      <!-- Sign Up Form (OTP Verified Before Account Creation) -->
+      <form id="pageSignupForm" style="display:none;">
+        <div class="cf-row-2">
+          <div class="cf-form-group">
+            <label>Full Name *</label>
+            <input class="cf-input" id="signupName" required placeholder="Your full name" />
+          </div>
+          <div class="cf-form-group">
+            <label>Student ID *</label>
+            <input class="cf-input" id="signupStudentId" required placeholder="e.g. 2023100000354" />
+          </div>
+        </div>
+
+        <div class="cf-row-2">
+          <div class="cf-form-group">
+            <label>University Email (@seu.edu.bd) *</label>
+            <input class="cf-input" type="email" id="signupEmail" required placeholder="yourid@seu.edu.bd" />
+          </div>
+          <div class="cf-form-group">
+            <label>WhatsApp Phone Number *</label>
+            <input class="cf-input" type="tel" id="signupPhone" required placeholder="+8801XXXXXXXXX" />
+          </div>
+        </div>
+
+        <div class="cf-form-group">
+          <label>Department *</label>
+          <select class="cf-input" id="signupDept" required>
+            <option value="" selected disabled>Select your department</option>
+            <optgroup label="School of Engineering (SE)">
+              <option value="Department of Computer Science & Engineering (CSE)">Department of Computer Science &amp; Engineering (CSE)</option>
+              <option value="Department of Software Engineering (SWE)">Department of Software Engineering (SWE)</option>
+              <option value="Department of Electrical and Electronic Engineering (EEE)">Department of Electrical and Electronic Engineering (EEE)</option>
+              <option value="Department of Textile Engineering">Department of Textile Engineering</option>
+              <option value="Department of Architecture">Department of Architecture</option>
+            </optgroup>
+            <optgroup label="School of Arts & Social Sciences (SASS)">
+              <option value="Department of Economics">Department of Economics</option>
+              <option value="Department of English">Department of English</option>
+              <option value="Department of Bangla">Department of Bangla</option>
+            </optgroup>
+            <optgroup label="School of Business Studies (SBS)">
+              <option value="Department of Business Administration">Department of Business Administration</option>
+            </optgroup>
+            <optgroup label="School of Law (SL)">
+              <option value="Department of Law">Department of Law</option>
+            </optgroup>
+            <optgroup label="School of Science (SS)">
+              <option value="Department of Pharmacy">Department of Pharmacy</option>
+            </optgroup>
+            <optgroup label="School of Information Technology (SIT)">
+              <option value="Department of Information & Communication Technology (ICT)">Department of Information &amp; Communication Technology (ICT)</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="cf-row-2">
+          <div class="cf-form-group">
+            <label>Password *</label>
+            <div class="pass-wrap">
+              <input class="cf-input" type="password" id="signupPass" required minlength="6" placeholder="Min 6 characters" />
+              <button type="button" class="eye-toggle-btn" data-target="signupPass" aria-label="Toggle password">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="cf-form-group">
+            <label>Telegram Chat ID (Optional)</label>
+            <input class="cf-input" id="signupTgId" placeholder="For match alerts" />
+          </div>
+        </div>
+
+        <button class="cf-btn-primary cf-btn-orange" type="submit" id="signupSubmitBtn">
+          Sign Up &amp; Send OTP &rarr;
+        </button>
+      </form>
+
+      <!-- Forgot Password Form -->
+      <form id="pageForgotForm" style="display:none;">
+        <h3 style="margin:0 0 12px;font-size:18px;font-weight:800;color:#0b2559;">Reset Password via @seu.edu.bd OTP</h3>
+        <div class="cf-form-group">
+          <label>University Email (@seu.edu.bd)</label>
+          <input class="cf-input" type="email" id="forgotEmail" required placeholder="yourid@seu.edu.bd" />
+        </div>
+        <div class="dev-otp-inline" id="forgotDevOtp"></div>
+
+        <div id="forgotVerifyStep" style="display:none;">
+          <div class="cf-form-group">
+            <label>6-Digit Reset OTP</label>
+            <input class="cf-input" id="forgotOtpInput" maxlength="6" placeholder="123456" />
+          </div>
+          <div class="cf-form-group">
+            <label>New Password</label>
+            <div class="pass-wrap">
+              <input class="cf-input" type="password" id="forgotNewPass" minlength="6" placeholder="New password (min 6 chars)" />
+              <button type="button" class="eye-toggle-btn" data-target="forgotNewPass" aria-label="Toggle password">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button type="button" class="cf-btn-primary" id="sendForgotOtpBtn" style="flex:1;">Send Reset OTP</button>
+          <button type="submit" class="cf-btn-primary cf-btn-orange" id="confirmResetBtn" style="flex:1;display:none;">Update Password</button>
+        </div>
+
+        <div style="margin-top:14px;">
+          <button type="button" class="link-btn-inline" id="backToLoginBtn">&larr; Back to Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/toast.js"></script>
+  <script>
+    const TOKEN_KEY = 'campusfind_token';
+    const USER_KEY = 'campusfind_user';
+
+    if (localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY)) {
+      window.location.href = '/';
+    }
+
+    document.querySelectorAll('.eye-toggle-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        const icon = btn.querySelector('i');
+        if (!input) return;
+        const isPass = input.type === 'password';
+        input.type = isPass ? 'text' : 'password';
+        icon.className = isPass ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+      });
+    });
+
+    const loginForm = document.getElementById('pageLoginForm');
+    const signupForm = document.getElementById('pageSignupForm');
+    const forgotForm = document.getElementById('pageForgotForm');
+    const switchBar = document.getElementById('authSwitchBar');
+
+    const setMode = (mode) => {
+      forgotForm.style.display = 'none';
+      switchBar.style.display = 'grid';
+      const isLogin = mode !== 'signup';
+      loginForm.style.display = isLogin ? 'block' : 'none';
+      signupForm.style.display = isLogin ? 'none' : 'block';
+      document.getElementById('authTabLogin').classList.toggle('active', isLogin);
+      document.getElementById('authTabSignup').classList.toggle('active', !isLogin);
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    setMode(params.get('mode') || 'login');
+    document.getElementById('authTabLogin').addEventListener('click', () => setMode('login'));
+    document.getElementById('authTabSignup').addEventListener('click', () => setMode('signup'));
+
+    document.getElementById('openForgotBtn').addEventListener('click', () => {
+      loginForm.style.display = 'none';
+      signupForm.style.display = 'none';
+      switchBar.style.display = 'none';
+      forgotForm.style.display = 'block';
+    });
+
+    document.getElementById('backToLoginBtn').addEventListener('click', () => setMode('login'));
+
+    const goOtpPage = ({ email, purpose, expiresAt, devOtp }) => {
+      sessionStorage.setItem(
+        'cf_pending_otp',
+        JSON.stringify({ email, purpose, expiresAt, devOtp: devOtp || '' })
+      );
+      window.location.href = `/otp.html?purpose=${encodeURIComponent(purpose)}&email=${encodeURIComponent(email)}`;
+    };
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('loginSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Logging in...';
+
+      try {
+        const identifier = document.getElementById('loginEmailOrId').value.trim();
+        const password = document.getElementById('loginPass').value;
+        const rememberMe = document.getElementById('rememberMeCheck').checked;
+
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier, password, rememberMe })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          window.CfToast.show(data.message || 'Login failed', 'error');
+          return;
+        }
+
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+        sessionStorage.removeItem(TOKEN_KEY);
+        sessionStorage.removeItem(USER_KEY);
+
+        const targetStorage = rememberMe ? localStorage : sessionStorage;
+        targetStorage.setItem(TOKEN_KEY, data.token);
+        targetStorage.setItem(USER_KEY, JSON.stringify(data.user));
+
+        window.CfToast.show('Login successful!', 'success');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 300);
+      } catch (_) {
+        window.CfToast.show('Network error during login', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Login →';
+      }
+    });
+
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('signupEmail').value.trim();
+      const department = document.getElementById('signupDept').value.trim();
+      const cleanPhone = document.getElementById('signupPhone').value.trim().replace(/[\s()-]/g, '');
+
+      if (!/@seu\.edu\.bd$/i.test(email)) {
+        return window.CfToast.show('Please use your valid @seu.edu.bd email address.', 'error');
+      }
+      if (!department) {
+        return window.CfToast.show('Please select your department.', 'error');
+      }
+      if (!/^\+?[0-9]{10,15}$/.test(cleanPhone)) {
+        return window.CfToast.show('Please enter a valid WhatsApp phone number.', 'error');
+      }
+
+      const btn = document.getElementById('signupSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending OTP...';
+
+      try {
+        const payload = {
+          name: document.getElementById('signupName').value.trim(),
+          studentId: document.getElementById('signupStudentId').value.trim(),
+          email,
+          department,
+          phone: cleanPhone,
+          telegramChatId: document.getElementById('signupTgId').value.trim(),
+          password: document.getElementById('signupPass').value
+        };
+
+        const res = await fetch('/api/auth/signup-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!data.success) {
+          window.CfToast.show(data.message || 'Could not send OTP', 'error');
+          return;
+        }
+
+        goOtpPage({
+          email: data.email,
+          purpose: 'signup',
+          expiresAt: data.expiresAt,
+          devOtp: data.devOtp
+        });
+      } catch (_) {
+        window.CfToast.show('Network error while sending OTP', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Sign Up & Send OTP →';
+      }
+    });
+
+    document.getElementById('sendForgotOtpBtn').addEventListener('click', async () => {
+      const email = document.getElementById('forgotEmail').value.trim();
+      if (!/@seu\.edu\.bd$/i.test(email)) {
+        return window.CfToast.show('Please enter your @seu.edu.bd email address.', 'error');
+      }
+
+      const btn = document.getElementById('sendForgotOtpBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      try {
+        const res = await fetch('/api/auth/forgot-password-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          window.CfToast.show(data.message || 'Could not send reset OTP', 'error');
+          return;
+        }
+
+        document.getElementById('forgotVerifyStep').style.display = 'block';
+        document.getElementById('confirmResetBtn').style.display = 'inline-block';
+        const devBox = document.getElementById('forgotDevOtp');
+        if (data.devOtp) {
+          devBox.style.display = 'block';
+          devBox.textContent = `Dev Reset OTP: ${data.devOtp}`;
+        }
+        window.CfToast.show(data.message || 'Reset OTP sent!', 'success');
+      } catch (_) {
+        window.CfToast.show('Network error sending reset OTP', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Reset OTP';
+      }
+    });
+
+    forgotForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('forgotEmail').value.trim();
+      const otp = document.getElementById('forgotOtpInput').value.trim();
+      const newPassword = document.getElementById('forgotNewPass').value;
+
+      const btn = document.getElementById('confirmResetBtn');
+      btn.disabled = true;
+      btn.textContent = 'Updating...';
+
+      try {
+        const res = await fetch('/api/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, otp, newPassword })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          window.CfToast.show(data.message || 'Password reset failed', 'error');
+          return;
+        }
+        window.CfToast.show(data.message || 'Password reset complete!', 'success');
+        setMode('login');
+      } catch (_) {
+        window.CfToast.show('Network error resetting password', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Update Password';
+      }
+    });
+  </script>
+</body>
+</html>

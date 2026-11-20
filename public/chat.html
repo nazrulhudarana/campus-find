@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claim Chat &amp; Handover — CampusFind (SEU)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/modals.css" />
+  <link rel="stylesheet" href="/css/shell.css" />
+  <style>
+    .wa-wrap {
+      max-width: 860px;
+      margin: 10px auto 24px;
+      padding: 0 10px;
+    }
+
+    .wa-card {
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(8, 43, 89, 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wa-topbar {
+      background: #082B59;
+      color: #ffffff;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .wa-top-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .wa-back-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .wa-top-titles {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .wa-top-titles strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wa-top-titles small {
+      display: block;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.84);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wa-topbar .cf-status-tag {
+      flex-shrink: 0;
+    }
+
+    .wa-body {
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div id="pageContent">
+    <div class="wa-wrap">
+      <div class="wa-card">
+        <header class="wa-topbar">
+          <div class="wa-top-left">
+            <a href="/claims.html" class="wa-back-btn" aria-label="Back to Claims">
+              <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div class="wa-top-titles">
+              <strong id="waClaimTitle">Claim Chat</strong>
+              <small id="waClaimSub">Loading conversation...</small>
+            </div>
+          </div>
+          <span class="cf-status-tag" id="waClaimStatusTag">PENDING</span>
+        </header>
+
+        <div class="wa-body" id="waChatMount">
+          <p class="item-meta">Loading chat room...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/shell.js"></script>
+  <script src="/js/claims.js"></script>
+  <script>
+    window.CampusFindShell?.mount('claims');
+
+    (async () => {
+      const TOKEN_KEY = 'campusfind_token';
+      const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+      if (!token) {
+        window.location.href = '/auth.html?mode=login';
+        return;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const claimId = params.get('claimId');
+      if (!claimId) {
+        window.location.href = '/claims.html';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/claims/my', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const found = (data.claims || []).find((c) => String(c._id) === String(claimId));
+        if (!found) {
+          document.getElementById('waChatMount').innerHTML =
+            '<p class="item-meta">Claim conversation not found.</p>';
+          return;
+        }
+
+        document.getElementById('waClaimTitle').textContent = found.item?.title || 'Claim Chat';
+        document.getElementById('waClaimSub').textContent = `${
+          found.claimant?.name || 'Student'
+        } • Match: ${found.answerMatchScore ?? 0}%`;
+        const tag = document.getElementById('waClaimStatusTag');
+        tag.textContent = (found.status || 'pending').toUpperCase();
+        tag.className = `cf-status-tag status-${found.status || 'pending'}`;
+
+        window.CampusFindClaims?.openReviewModal(found);
+      } catch (_) {
+        document.getElementById('waChatMount').innerHTML =
+          '<p class="item-meta">Could not load conversation.</p>';
+      }
+    })();
+  </script>
+</body>
+</html>

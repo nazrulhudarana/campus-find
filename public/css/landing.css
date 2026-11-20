@@ -1,0 +1,539 @@
+.landing-view {
+  min-height: 100vh;
+  background: #f4f7fc;
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Blue Hero Band with Right-Side Blended Banner Backdrop */
+.lp-hero-band {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(95deg, #061636 0%, #0b2a66 48%, rgba(14, 52, 120, 0.72) 74%, rgba(29, 78, 216, 0.55) 100%),
+    linear-gradient(135deg, #07193d 0%, #0e3478 60%, #1d4ed8 100%);
+  color: #ffffff;
+  padding-bottom: 52px;
+  border-bottom-left-radius: 34px;
+  border-bottom-right-radius: 34px;
+}
+
+.lp-hero-bg-layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 56%;
+  height: 100%;
+  background-image: url('/uploads/hero-banner.webp');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  opacity: 0.48;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 28%, #000 65%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 28%, #000 65%);
+}
+
+.lp-hero-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, #061636 0%, rgba(11, 42, 102, 0.88) 44%, rgba(14, 52, 120, 0.32) 75%, rgba(14, 52, 120, 0.18) 100%),
+    linear-gradient(180deg, rgba(6, 22, 54, 0.35) 0%, rgba(6, 22, 54, 0.05) 55%, rgba(11, 42, 102, 0.85) 100%);
+}
+
+.lp-nav,
+.lp-mobile-pills,
+.lp-hero-grid {
+  position: relative;
+  z-index: 5;
+}
+
+.lp-nav {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lp-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 2x Bigger Logo Across PC & Mobile */
+.lp-logo-banner {
+  height: 108px;
+  width: auto;
+  max-width: 540px;
+  object-fit: contain;
+  border-radius: 14px;
+  display: block;
+}
+
+.lp-links {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.lp-links a {
+  color: rgba(255, 255, 255, 0.94);
+  text-decoration: none;
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.lp-links a:hover {
+  color: #fb923c;
+}
+
+/* Clean Mobile Pill Bar (Replaces Overlapping Hamburger Menu) */
+.lp-mobile-pills {
+  display: none;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 18px 8px;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.lp-mobile-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.lp-mobile-pills a {
+  flex-shrink: 0;
+  text-decoration: none;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.lp-mobile-pills a:hover {
+  background: #f97316;
+  border-color: #f97316;
+}
+
+.lp-auth-btns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.lp-btn-outline {
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lp-btn-orange {
+  border: none;
+  background: linear-gradient(135deg, #fb923c, #ea580c);
+  color: #ffffff;
+  padding: 11px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(234, 88, 12, 0.38);
+}
+
+.lp-hero-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 24px 12px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.lp-hero-copy {
+  min-width: 0;
+}
+
+.lp-hero-copy h2 {
+  font-size: clamp(34px, 4.8vw, 54px);
+  line-height: 1.12;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.lp-hero-copy p {
+  font-size: 16.5px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 560px;
+  margin-bottom: 22px;
+}
+
+.lp-mini-badges {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 12px 26px;
+  margin-bottom: 24px;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.lp-mini-badges span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lp-mini-badges i {
+  color: #fb923c;
+  font-size: 15px;
+}
+
+.lp-hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.lp-hero-right-spacer {
+  min-height: 160px;
+}
+
+/* Body Sections */
+.lp-container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.lp-stats-strip {
+  position: relative;
+  z-index: 3;
+  margin-top: -22px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 22px 16px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: center;
+  gap: 14px;
+}
+
+.lp-stat-box i {
+  font-size: 24px;
+  color: #1d4ed8;
+  margin-bottom: 6px;
+}
+
+.lp-stat-box strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.lp-stat-box span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.lp-section-head {
+  text-align: center;
+  margin: 38px 0 20px;
+}
+
+.lp-section-head h3 {
+  font-size: 28px;
+  font-weight: 900;
+  color: #0b2559;
+}
+
+.lp-section-head h3 span {
+  color: #f97316;
+}
+
+.lp-section-head p {
+  font-size: 14.5px;
+  color: #64748b;
+  margin-top: 5px;
+}
+
+.lp-features-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.lp-feat-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px 16px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+}
+
+.lp-feat-card i {
+  font-size: 26px;
+  color: #1d4ed8;
+  margin-bottom: 10px;
+}
+
+.lp-feat-card strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.lp-feat-card span {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.lp-steps-box {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.lp-step-item {
+  text-align: center;
+}
+
+.lp-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f97316;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 8px;
+}
+
+.lp-step-item strong {
+  display: block;
+  font-size: 14.5px;
+  margin-bottom: 4px;
+}
+
+.lp-step-item span {
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.lp-bottom-cta {
+  margin: 32px 0 36px;
+  background: linear-gradient(135deg, #07193d, #16499a);
+  color: #ffffff;
+  border-radius: 22px;
+  padding: 22px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.lp-bottom-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lp-bottom-left i {
+  font-size: 34px;
+  color: #facc15;
+}
+
+.lp-bottom-left strong {
+  display: block;
+  font-size: 19px;
+}
+
+.lp-bottom-left span {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.lp-bottom-btns {
+  display: flex;
+  gap: 12px;
+}
+
+/* Landing Page Dark Multi-Column Footer (PC & Mobile) */
+.lp-footer {
+  margin-top: auto;
+  background: #07041c;
+  color: #cbd5e1;
+  padding: 36px 24px 26px;
+}
+
+.lp-footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.lp-footer-grid {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr 1fr 1fr;
+  gap: 28px;
+}
+
+.lp-footer-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #94a3b8;
+  max-width: 340px;
+  margin: 12px 0 14px;
+}
+
+.lp-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #14112b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #e2e8f0;
+}
+
+.lp-footer-col h4 {
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.lp-footer-col a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 13.5px;
+  margin-bottom: 9px;
+}
+
+.lp-footer-col a:hover {
+  color: #fb923c;
+}
+
+.lp-footer-bottom {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* Mobile Responsive (< 860px) */
+@media (max-width: 860px) {
+  .lp-links {
+    display: none;
+  }
+
+  .lp-mobile-pills {
+    display: flex;
+  }
+
+  /* 2x Bigger Logo on Mobile */
+  .lp-logo-banner {
+    height: 76px;
+    max-width: 290px;
+  }
+
+  .lp-hero-bg-layer {
+    width: 82%;
+    opacity: 0.42;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.45) 38%, #000 80%);
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.45) 38%, #000 80%);
+  }
+
+  .lp-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 14px 18px 8px;
+  }
+
+  .lp-hero-right-spacer {
+    min-height: 60px;
+  }
+
+  .lp-stats-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lp-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lp-steps-box {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lp-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .lp-footer-brand-col {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp-logo-banner {
+    height: 68px;
+    max-width: 230px;
+  }
+
+  .lp-auth-btns {
+    gap: 7px;
+  }
+
+  .lp-auth-btns .lp-btn-outline {
+    padding: 8px 11px;
+    font-size: 12px;
+  }
+
+  .lp-auth-btns .lp-btn-orange {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}

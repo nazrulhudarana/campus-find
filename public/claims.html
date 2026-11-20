@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Claims &amp; Founder Review — CampusFind (SEU)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/modals.css" />
+  <link rel="stylesheet" href="/css/shell.css" />
+  <style>
+    .clm-wrap {
+      max-width: 1120px;
+      margin: 20px auto 34px;
+      padding: 0 16px;
+    }
+
+    .clm-banner {
+      background: linear-gradient(135deg, #082B59 0%, #1261D6 100%);
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 12px 28px rgba(8, 43, 89, 0.14);
+    }
+
+    .clm-banner h1 {
+      margin: 0 0 5px;
+      font-size: clamp(20px, 2.6vw, 27px);
+      font-weight: 900;
+    }
+
+    .clm-banner p {
+      margin: 0;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    .clm-filter-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .clm-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .clm-tab-btn {
+      border: 1px solid #dbeafe;
+      background: #ffffff;
+      color: #082B59;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .clm-tab-btn.active {
+      background: #1261D6;
+      border-color: #1261D6;
+      color: #ffffff;
+    }
+
+    .clm-card-panel {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(8, 43, 89, 0.06);
+    }
+  </style>
+</head>
+<body>
+  <div id="pageContent">
+    <div class="clm-wrap">
+      <div class="clm-banner">
+        <div>
+          <h1><i class="fa-solid fa-hand-holding"></i> My Claims &amp; Founder Review</h1>
+          <p>
+            Review proof answer match scores, chat with founders or claimants, schedule meetups, and verify handovers.
+          </p>
+        </div>
+        <button type="button" id="clmRefreshBtn" class="cf-refresh-btn">
+          <i class="fa-solid fa-rotate-right"></i> Refresh Claims
+        </button>
+      </div>
+
+      <div class="clm-filter-row">
+        <div class="clm-tabs" id="clmRoleTabs">
+          <button type="button" class="clm-tab-btn active" data-role="all">All Claims</button>
+          <button type="button" class="clm-tab-btn" data-role="claimant">Submitted by Me</button>
+          <button type="button" class="clm-tab-btn" data-role="founder">Founder Review</button>
+        </div>
+      </div>
+
+      <div class="clm-card-panel">
+        <div id="cfDedicatedClaimsMount"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/shell.js"></script>
+  <script src="/js/claims.js"></script>
+  <script>
+    window.CampusFindShell?.mount('claims');
+
+    const TOKEN_KEY = 'campusfind_token';
+    const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      window.location.href = '/auth.html?mode=login';
+    }
+
+    let activeRole = 'all';
+
+    const loadPageClaims = () => {
+      window.CampusFindClaims?.renderClaimsPanel('cfDedicatedClaimsMount', activeRole);
+    };
+
+    document.getElementById('clmRefreshBtn')?.addEventListener('click', loadPageClaims);
+
+    document.querySelectorAll('#clmRoleTabs .clm-tab-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#clmRoleTabs .clm-tab-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeRole = btn.dataset.role || 'all';
+        loadPageClaims();
+      });
+    });
+
+    loadPageClaims();
+  </script>
+</body>
+</html>

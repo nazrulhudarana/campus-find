@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Found Item — CampusFind (SEU)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/modals.css" />
+  <link rel="stylesheet" href="/css/shell.css" />
+  <style>
+    .rep-container {
+      max-width: 1120px;
+      margin: 20px auto 32px;
+      padding: 0 16px;
+    }
+
+    .rep-banner {
+      background: linear-gradient(135deg, #082B59 0%, #c2410c 55%, #FF7900 100%);
+      color: #FFFFFF;
+      border-radius: 20px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 12px 28px rgba(8, 43, 89, 0.14);
+    }
+
+    .rep-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .rep-banner h1 {
+      font-size: clamp(21px, 2.8vw, 28px);
+      font-weight: 900;
+      margin: 0 0 6px;
+    }
+
+    .rep-banner p {
+      font-size: 13.5px;
+      color: rgba(255, 255, 255, 0.92);
+      max-width: 600px;
+    }
+
+    .rep-banner-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.18);
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      color: #fde047;
+      flex-shrink: 0;
+    }
+
+    .rep-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .rep-card {
+      background: #FFFFFF;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(8, 43, 89, 0.06);
+    }
+
+    .rep-card h2 {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: #082B59;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rep-map-box {
+      height: 260px;
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 12px;
+      z-index: 1;
+    }
+
+    .spot-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .spot-chip {
+      border: 1px solid #fed7aa;
+      background: #fff7ed;
+      color: #c2410c;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .spot-chip:hover {
+      background: #FF7900;
+      color: #FFFFFF;
+    }
+
+    .photo-preview-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .photo-preview-row img {
+      width: 76px;
+      height: 76px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid #cbd5e1;
+    }
+
+    .proof-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 13px 14px;
+      margin-bottom: 14px;
+    }
+
+    .proof-box label {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #082B59;
+    }
+
+    .proof-box small {
+      display: block;
+      font-size: 11.5px;
+      color: #475569;
+      margin-top: 5px;
+    }
+
+    .proof-q-row {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .add-q-btn {
+      border: none;
+      background: #1261D6;
+      color: #ffffff;
+      padding: 6px 11px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .rm-pq-btn {
+      margin-top: 6px;
+      border: none;
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 4px 9px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .security-box {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 14px;
+      padding: 13px 14px;
+      margin-bottom: 14px;
+    }
+
+    .security-toggle {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #9a3412;
+      cursor: pointer;
+    }
+
+    .security-toggle input {
+      width: 17px;
+      height: 17px;
+      accent-color: #FF7900;
+      cursor: pointer;
+    }
+
+    .security-pin-panel {
+      margin-top: 10px;
+      display: none;
+    }
+
+    .security-pin-panel.open {
+      display: block;
+    }
+
+    .pin-generated-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gen-pin-btn {
+      border: 1px solid #fdba74;
+      background: #ffffff;
+      color: #c2410c;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .tip-box {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 12.5px;
+      color: #065f46;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 840px) {
+      .rep-grid {
+        grid-template-columns: 1fr;
+      }
+      .rep-banner-icon {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="pageContent">
+    <div class="rep-container">
+      <div class="rep-banner">
+        <div>
+          <span class="rep-badge"><i class="fa-solid fa-hand-holding-heart"></i> Found Item Report</span>
+          <h1>Report a Found Item</h1>
+          <p>
+            Set multiple ownership proof questions, optionally drop the item at Security Desk with a 4-digit PIN,
+            and review claimant match scores with ongoing chat.
+          </p>
+        </div>
+        <div class="rep-banner-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+      </div>
+
+      <form id="reportFoundForm" class="rep-grid">
+        <div class="rep-card">
+          <h2><i class="fa-solid fa-box-open" style="color:#FF7900;"></i> Found Item Information</h2>
+
+          <div class="cf-form-group">
+            <label>Found Item Title *</label>
+            <input class="cf-input" id="foundTitle" required placeholder="e.g. White AirPods Case, Blue Calculator, Smartphone" />
+          </div>
+
+          <div class="cf-row-2">
+            <div class="cf-form-group">
+              <label>Category *</label>
+              <select class="cf-input" id="foundCategory" required>
+                <option value="Electronics">Electronics (Phone, Laptop, Earbuds)</option>
+                <option value="ID & Cards">SEU ID Card / Wallet / Bank Card</option>
+                <option value="Bags & Books">Backpack / Books / Notebook</option>
+                <option value="Accessories">Keys / Watch / Glasses / Bottle</option>
+                <option value="Documents">Certificates / Lab File / Documents</option>
+                <option value="General">Other Item</option>
+              </select>
+            </div>
+            <div class="cf-form-group">
+              <label>Date &amp; Time Found *</label>
+              <input class="cf-input" type="datetime-local" id="foundDate" required />
+            </div>
+          </div>
+
+          <div class="cf-row-2">
+            <div class="cf-form-group">
+              <label>Building / Zone Found *</label>
+              <input class="cf-input" id="foundBuilding" required placeholder="e.g. SEU Academic Building / Library" />
+            </div>
+            <div class="cf-form-group">
+              <label>Floor</label>
+              <input class="cf-input" id="foundFloor" placeholder="e.g. 5th Floor / Ground Floor" />
+            </div>
+          </div>
+
+          <div class="cf-row-2">
+            <div class="cf-form-group">
+              <label>Specific Room (If Known)</label>
+              <input class="cf-input" id="foundRoom" placeholder="e.g. Room 504 / Corridor" />
+            </div>
+            <div class="cf-form-group">
+              <label>Expected Room Range (If Unsure)</label>
+              <input class="cf-input" id="foundRoomRange" placeholder="e.g. Room 501 to 510" />
+            </div>
+          </div>
+
+          <div class="cf-form-group">
+            <label>Exact Found Time (Optional)</label>
+            <input class="cf-input" type="time" id="foundExactTime" />
+          </div>
+
+          <div class="cf-form-group">
+            <label>Item Description &amp; Condition *</label>
+            <textarea
+              class="cf-input"
+              id="foundDesc"
+              rows="3"
+              required
+              placeholder="Describe general appearance and where you found it (keep secret proof answers for claim verification)..."
+            ></textarea>
+          </div>
+
+          <!-- Multiple Proof Questions Builder -->
+          <div class="proof-box">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
+              <label style="margin:0;">
+                <i class="fa-solid fa-circle-question" style="color:#1261D6;"></i>
+                Ownership Proof Questions (Multiple Allowed) *
+              </label>
+              <button type="button" id="addProofQBtn" class="add-q-btn">+ Add Question</button>
+            </div>
+
+            <div id="proofQuestionsContainer">
+              <div class="proof-q-row">
+                <input
+                  class="cf-input pq-question"
+                  required
+                  placeholder='Question 1 (e.g. "What is the phone wallpaper?")'
+                  style="margin-bottom:6px;"
+                />
+                <input
+                  class="cf-input pq-answer"
+                  placeholder="Expected answer key (for match score calculation, optional)"
+                />
+              </div>
+            </div>
+
+            <small>
+              Claimants answer each question when claiming; their score and conversation appear in your portal.
+            </small>
+          </div>
+
+          <!-- Drop at Security Desk Proxy Handover + 4-Digit PIN -->
+          <div class="security-box">
+            <label class="security-toggle">
+              <input type="checkbox" id="dropAtSecurityCheck" />
+              <span><i class="fa-solid fa-building-shield"></i> Drop at Security Desk (Proxy Handover)</span>
+            </label>
+            <div class="security-pin-panel" id="securityPinPanel">
+              <label style="display:block;font-size:12px;font-weight:700;color:#9a3412;margin-bottom:6px;">
+                4-Digit Security Desk PIN
+              </label>
+              <div class="pin-generated-row">
+                <input
+                  class="cf-input"
+                  id="foundPin"
+                  maxlength="4"
+                  pattern="[0-9]{4}"
+                  placeholder="4-digit PIN (e.g. 4829)"
+                />
+                <button type="button" class="gen-pin-btn" id="generatePinBtn">
+                  <i class="fa-solid fa-shuffle"></i> Auto PIN
+                </button>
+              </div>
+              <small style="display:block;font-size:11.5px;color:#7c2d12;margin-top:5px;">
+                Used by the owner and Security Desk to verify handover safely.
+              </small>
+            </div>
+          </div>
+
+          <div class="cf-form-group">
+            <label>Photos of Found Item (Up to 3 images)</label>
+            <input class="cf-input" type="file" id="foundPhotos" accept="image/*" multiple />
+            <div class="photo-preview-row" id="foundPhotoPreview"></div>
+          </div>
+
+          <button type="submit" class="cf-btn-primary" id="submitFoundBtn" style="background:#FF7900;">
+            <i class="fa-solid fa-circle-check"></i> Publish Found Item
+          </button>
+        </div>
+
+        <div class="rep-card">
+          <h2><i class="fa-solid fa-location-dot" style="color:#1261D6;"></i> Pin Found Location</h2>
+          <div class="spot-chips">
+            <button type="button" class="spot-chip" data-name="SEU Academic Building" data-lat="23.7689" data-lng="90.4067">Academic Building</button>
+            <button type="button" class="spot-chip" data-name="Central Library" data-lat="23.7692" data-lng="90.4071">Central Library</button>
+            <button type="button" class="spot-chip" data-name="Campus Cafeteria" data-lat="23.7686" data-lng="90.4063">Cafeteria</button>
+            <button type="button" class="spot-chip" data-name="Main Gate Security Desk" data-lat="23.7684" data-lng="90.4069">Security Desk</button>
+          </div>
+
+          <div id="foundMapPicker" class="rep-map-box"></div>
+
+          <div class="cf-form-group">
+            <label>Pinned Location Label</label>
+            <input class="cf-input" id="foundLocationLabel" value="SEU Academic Building" required />
+          </div>
+
+          <input type="hidden" id="foundLat" value="23.7689" />
+          <input type="hidden" id="foundLng" value="90.4067" />
+
+          <div class="tip-box">
+            <strong><i class="fa-solid fa-award"></i> Campus Hero &amp; Safe Claims:</strong>
+            Adding multiple proof questions helps verify true owners accurately and continue chat before approving a claim.
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/shell.js"></script>
+  <script>
+    window.CampusFindShell?.mount('report-found');
+
+    const TOKEN_KEY = 'campusfind_token';
+    const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      window.location.href = '/auth.html?mode=login';
+    }
+
+    const nowLocal = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+    document.getElementById('foundDate').value = nowLocal;
+
+    const qContainer = document.getElementById('proofQuestionsContainer');
+    document.getElementById('addProofQBtn').addEventListener('click', () => {
+      const idx = qContainer.querySelectorAll('.proof-q-row').length + 1;
+      const div = document.createElement('div');
+      div.className = 'proof-q-row';
+      div.innerHTML = `
+        <input class="cf-input pq-question" placeholder='Question ${idx} (e.g. "What is inside the front pocket?")' style="margin-bottom:6px;" />
+        <input class="cf-input pq-answer" placeholder="Expected answer key (optional)" />
+        <button type="button" class="rm-pq-btn">Remove</button>
+      `;
+      div.querySelector('.rm-pq-btn').addEventListener('click', () => div.remove());
+      qContainer.appendChild(div);
+    });
+
+    const dropCheck = document.getElementById('dropAtSecurityCheck');
+    const pinPanel = document.getElementById('securityPinPanel');
+    const pinInput = document.getElementById('foundPin');
+
+    const randomFourDigitPin = () => String(Math.floor(1000 + Math.random() * 9000));
+
+    dropCheck.addEventListener('change', () => {
+      pinPanel.classList.toggle('open', dropCheck.checked);
+      if (dropCheck.checked && !pinInput.value.trim()) {
+        pinInput.value = randomFourDigitPin();
+      }
+    });
+
+    document.getElementById('generatePinBtn').addEventListener('click', () => {
+      dropCheck.checked = true;
+      pinPanel.classList.add('open');
+      pinInput.value = randomFourDigitPin();
+    });
+
+    const map = L.map('foundMapPicker').setView([23.7689, 90.4067], 17);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const marker = L.marker([23.7689, 90.4067], { draggable: true }).addTo(map);
+
+    const setSpot = (lat, lng, label) => {
+      document.getElementById('foundLat').value = lat;
+      document.getElementById('foundLng').value = lng;
+      if (label) {
+        document.getElementById('foundLocationLabel').value = label;
+        if (!document.getElementById('foundBuilding').value) {
+          document.getElementById('foundBuilding').value = label;
+        }
+      }
+      marker.setLatLng([lat, lng]);
+      map.setView([lat, lng], 18);
+    };
+
+    map.on('click', (e) => {
+      setSpot(e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6));
+    });
+
+    marker.on('dragend', () => {
+      const pos = marker.getLatLng();
+      document.getElementById('foundLat').value = pos.lat.toFixed(6);
+      document.getElementById('foundLng').value = pos.lng.toFixed(6);
+    });
+
+    document.querySelectorAll('.spot-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        setSpot(Number(chip.dataset.lat), Number(chip.dataset.lng), chip.dataset.name);
+      });
+    });
+
+    document.getElementById('foundPhotos').addEventListener('change', (e) => {
+      const preview = document.getElementById('foundPhotoPreview');
+      preview.innerHTML = '';
+      Array.from(e.target.files || [])
+        .slice(0, 3)
+        .forEach((file) => {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          preview.appendChild(img);
+        });
+    });
+
+    document.getElementById('reportFoundForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const questionsList = Array.from(qContainer.querySelectorAll('.proof-q-row'))
+        .map((row) => ({
+          question: row.querySelector('.pq-question')?.value.trim() || '',
+          expectedAnswer: row.querySelector('.pq-answer')?.value.trim() || ''
+        }))
+        .filter((q) => q.question.length > 0);
+
+      if (questionsList.length === 0) {
+        return window.CfToast.show('Please enter at least one proof question.', 'error');
+      }
+
+      const dropAtSecurity = dropCheck.checked;
+      let pinVal = pinInput.value.trim();
+      if (dropAtSecurity && !pinVal) {
+        pinVal = randomFourDigitPin();
+        pinInput.value = pinVal;
+      }
+      if (pinVal && !/^[0-9]{4}$/.test(pinVal)) {
+        return window.CfToast.show('Security PIN must be exactly 4 digits.', 'error');
+      }
+
+      const btn = document.getElementById('submitFoundBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
+
+      try {
+        const fd = new FormData();
+        const buildingVal = document.getElementById('foundBuilding').value.trim();
+        const floorVal = document.getElementById('foundFloor').value.trim();
+        const roomVal = document.getElementById('foundRoom').value.trim();
+        const rangeVal = document.getElementById('foundRoomRange').value.trim();
+        const exactTimeVal = document.getElementById('foundExactTime').value.trim();
+        const labelVal =
+          document.getElementById('foundLocationLabel').value.trim() || buildingVal || 'SEU Campus';
+
+        const locParts = [
+          labelVal,
+          floorVal,
+          roomVal || (rangeVal ? `Expected: ${rangeVal}` : '')
+        ].filter(Boolean);
+        const fullLoc = locParts.join(' • ');
+
+        const baseDesc = document.getElementById('foundDesc').value.trim();
+        const extraDetails = [
+          rangeVal && !roomVal ? `Expected Room Range: ${rangeVal}` : '',
+          exactTimeVal ? `Found Time: ${exactTimeVal}` : ''
+        ].filter(Boolean);
+        const fullDesc = extraDetails.length
+          ? `${baseDesc} (${extraDetails.join(' | ')})`
+          : baseDesc;
+
+        const latVal = document.getElementById('foundLat').value || '23.7689';
+        const lngVal = document.getElementById('foundLng').value || '90.4067';
+
+        fd.append('type', 'found');
+        fd.append('title', document.getElementById('foundTitle').value.trim());
+        fd.append('category', document.getElementById('foundCategory').value);
+        fd.append('eventDate', document.getElementById('foundDate').value);
+        fd.append('locationName', fullLoc);
+        fd.append('coordinates.lat', latVal);
+        fd.append('coordinates.lng', lngVal);
+        fd.append('description', fullDesc);
+        fd.append('proofQuestion', questionsList[0].question);
+        fd.append('proofQuestions', JSON.stringify(questionsList));
+        fd.append('dropAtSecurity', String(dropAtSecurity));
+        if (pinVal) {
+          fd.append('securityPin', pinVal);
+        }
+
+        Array.from(document.getElementById('foundPhotos').files || [])
+          .slice(0, 3)
+          .forEach((file) => fd.append('photos', file));
+
+        const res = await fetch('/api/items', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + token },
+          body: fd
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          window.CfToast.show(data.message || 'Could not publish found item', 'error');
+          return;
+        }
+
+        const matchCount = Array.isArray(data.matches) ? data.matches.length : 0;
+        const msg =
+          matchCount > 0
+            ? `Found item published! ${matchCount} matching lost report(s) alerted!`
+            : 'Found item published! Thank you for helping the campus.';
+        window.CfToast.show(msg, 'success');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 700);
+      } catch (_) {
+        window.CfToast.show('Network error publishing item', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Publish Found Item';
+      }
+    });
+  </script>
+</body>
+</html>
